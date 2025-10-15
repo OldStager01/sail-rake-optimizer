@@ -1,24 +1,40 @@
-import { Package, AlertCircle, TrendingUp } from "lucide-react";
+import { Package, AlertCircle, TrendingUp, Plus } from "lucide-react";
+import { useState } from "react";
 import DataTable from "../components/DataTable";
+import OrderForm from "../components/OrderForm";
 import { stockyards, pendingOrders, loadingPoints } from "../data/mockData";
 import { getStatusColor, getPriorityColor } from "../utils/helpers";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Legend,
-  Tooltip,
-} from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const MaterialInventory = () => {
+  const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
+  const [orders, setOrders] = useState(pendingOrders);
+
+  const handleCreateOrder = (newOrder) => {
+    setOrders([...orders, newOrder]);
+  };
+
   const stockColumns = [
     { header: "Stockyard", accessor: "name" },
     { header: "Material Type", accessor: "material" },
     {
-      header: "Available Quantity",
+      header: "Total Quantity",
       accessor: "quantity",
       render: (row) => `${row.quantity} ${row.unit}`,
+    },
+    {
+      header: "Reserved",
+      accessor: "reserved",
+      render: (row) => `${row.reserved} ${row.unit}`,
+    },
+    {
+      header: "Available",
+      accessor: "available",
+      render: (row) => (
+        <span className="font-semibold text-green-600">
+          {row.available} {row.unit}
+        </span>
+      ),
     },
     {
       header: "Status",
@@ -58,6 +74,7 @@ const MaterialInventory = () => {
       ),
     },
     { header: "Deadline", accessor: "deadline" },
+    { header: "Destination", accessor: "destination" },
   ];
 
   const loadingColumns = [
@@ -86,19 +103,37 @@ const MaterialInventory = () => {
     { name: "TMT Bars", value: 3200 },
     { name: "Wire Rods", value: 1500 },
     { name: "Plates", value: 950 },
+    { name: "GP Sheets", value: 2200 },
   ];
 
-  const COLORS = ["#003366", "#0066CC", "#3399FF", "#66B2FF", "#99CCFF"];
+  const COLORS = [
+    "#003366",
+    "#0066CC",
+    "#3399FF",
+    "#66B2FF",
+    "#99CCFF",
+    "#CCEEFF",
+  ];
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">
-          Material Inventory Management
-        </h2>
-        <p className="text-gray-600 mt-1">
-          Track stockyard inventory, pending orders, and loading point capacity
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Material Inventory Management
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Track stockyard inventory, pending orders, and loading point
+            capacity
+          </p>
+        </div>
+        <button
+          onClick={() => setIsOrderFormOpen(true)}
+          className="btn-primary flex items-center space-x-2"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Create New Order</span>
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -109,7 +144,7 @@ const MaterialInventory = () => {
             </h3>
             <Package className="w-5 h-5 text-sail-blue" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">9,950 MT</p>
+          <p className="text-3xl font-bold text-gray-900">11,150 MT</p>
           <p className="text-sm text-green-600 mt-2 flex items-center">
             <TrendingUp className="w-4 h-4 mr-1" />
             12% increase from last week
@@ -123,10 +158,11 @@ const MaterialInventory = () => {
             </h3>
             <AlertCircle className="w-5 h-5 text-orange-500" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">
-            {pendingOrders.length}
+          <p className="text-3xl font-bold text-gray-900">{orders.length}</p>
+          <p className="text-sm text-gray-600 mt-2">
+            {orders.filter((o) => o.priority === "High").length} high priority
+            orders
           </p>
-          <p className="text-sm text-gray-600 mt-2">3 high priority orders</p>
         </div>
 
         <div className="card">
@@ -185,9 +221,9 @@ const MaterialInventory = () => {
 
       <div className="card">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Pending Customer Orders
+          Pending Customer Orders ({orders.length})
         </h3>
-        <DataTable columns={orderColumns} data={pendingOrders} />
+        <DataTable columns={orderColumns} data={orders} />
       </div>
 
       <div className="card">
@@ -196,6 +232,12 @@ const MaterialInventory = () => {
         </h3>
         <DataTable columns={loadingColumns} data={loadingPoints} />
       </div>
+
+      <OrderForm
+        isOpen={isOrderFormOpen}
+        onClose={() => setIsOrderFormOpen(false)}
+        onSubmit={handleCreateOrder}
+      />
     </div>
   );
 };

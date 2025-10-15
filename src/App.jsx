@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import RakeFormation from "./pages/RakeFormation";
 import MaterialInventory from "./pages/MaterialInventory";
 import Analytics from "./pages/Analytics";
+import Reports from "./pages/Reports";
 
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -20,14 +21,7 @@ function App() {
       case "analytics":
         return <Analytics />;
       case "reports":
-        return (
-          <div className="card">
-            <h2 className="text-xl font-bold">Reports Module</h2>
-            <p className="text-gray-600 mt-2">
-              Report generation and export functionality coming soon...
-            </p>
-          </div>
-        );
+        return <Reports />;
       case "settings":
         return (
           <div className="card">

@@ -93,7 +93,7 @@ const Dashboard = () => {
         <div className="text-right">
           <p className="text-sm text-gray-500">Last Updated</p>
           <p className="text-sm font-semibold text-gray-900">
-            Oct 15, 2024 09:03 AM
+            {new Date().toLocaleString()}
           </p>
         </div>
       </div>

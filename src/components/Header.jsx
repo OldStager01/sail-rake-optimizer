@@ -6,12 +6,14 @@ const Header = () => {
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-sail-blue rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">S</span>
-            </div>
+            <img
+              src="/sail_logo.svg"
+              alt="SAIL Logo"
+              className="w-10 h-10 object-contain"
+            />
             <div>
               <h1 className="text-xl font-bold text-sail-blue">
-                SAIL Rake Optimizer
+                Rake Optimizer
               </h1>
               <p className="text-xs text-gray-500">
                 Steel Authority of India Limited
