@@ -1,5 +1,10 @@
 # SAIL Rake Optimizer - AI-Powered Railway Transportation Management System
 
+## 🎬 Live Demo
+**🔗 [Watch Full Demo on YouTube](https://youtu.be/NP-vBWh0hSg)**
+
+[![SAIL Rake Optimizer Demo](https://img.youtube.com/vi/NP-vBWh0hSg/maxresdefault.jpg)](https://youtu.be/NP-vBWh0hSg)
+
 ## 🚂 Project Overview
 
 The SAIL Rake Optimizer is an advanced AI-powered web application designed for Steel Authority of India Limited (SAIL) to optimize railway rake formation and transportation management. This system helps in efficient scheduling, cost optimization, and real-time tracking of steel product shipments across India.
@@ -35,12 +40,6 @@ The SAIL Rake Optimizer is an advanced AI-powered web application designed for S
 - Detailed dispatch schedules
 - Cost optimization reports
 - Performance analytics
-
-## 🎬 Demo Video
-
-[![SAIL Rake Optimizer Demo](./images/Screenshot%202025-10-27%20201557.png)](./images/Demo.mp4)
-
-*Click on the image above to view the complete system demonstration*
 
 ## 📸 Application Screenshots
 
