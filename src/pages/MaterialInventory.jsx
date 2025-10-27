@@ -2,13 +2,12 @@ import { Package, AlertCircle, TrendingUp, Plus } from "lucide-react";
 import { useState } from "react";
 import DataTable from "../components/DataTable";
 import OrderForm from "../components/OrderForm";
-import { stockyards, pendingOrders, loadingPoints } from "../data/mockData";
+import { stockyards, loadingPoints } from "../data/mockData";
 import { getStatusColor, getPriorityColor } from "../utils/helpers";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
-const MaterialInventory = () => {
+const MaterialInventory = ({ orders, setOrders }) => {
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
-  const [orders, setOrders] = useState(pendingOrders);
 
   const handleCreateOrder = (newOrder) => {
     setOrders([...orders, newOrder]);

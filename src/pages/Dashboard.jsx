@@ -1,7 +1,7 @@
 import { Train, TrendingUp, Package, Clock } from "lucide-react";
 import MetricCard from "../components/MetricCard";
 import DataTable from "../components/DataTable";
-import { metrics, pendingOrders, rakeAvailability } from "../data/mockData";
+import { metrics, rakeAvailability } from "../data/mockData";
 import {
   getPriorityColor,
   getStatusColor,
@@ -20,7 +20,7 @@ import {
   Line,
 } from "recharts";
 
-const Dashboard = () => {
+const Dashboard = ({ orders = [] }) => {
   const utilizationData = [
     { month: "Apr", utilization: 82 },
     { month: "May", utilization: 78 },
@@ -180,7 +180,7 @@ const Dashboard = () => {
           </h3>
           <DataTable
             columns={orderColumns}
-            data={pendingOrders.filter((o) => o.priority === "High")}
+            data={orders.filter((o) => o.priority === "High")}
           />
         </div>
 

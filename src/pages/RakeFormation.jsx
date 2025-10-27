@@ -16,7 +16,6 @@ import DataTable from "../components/DataTable";
 import {
   optimizedRakePlan,
   costBreakdown,
-  pendingOrders,
   rakeAvailability,
   loadingPoints,
   stockyards,
@@ -27,12 +26,12 @@ import {
   getStatusColor,
 } from "../utils/helpers";
 
-const RakeFormation = () => {
+const RakeFormation = ({ orders, setOrders }) => {
   const [plans, setPlans] = useState(optimizedRakePlan);
   const [isCreatingPlan, setIsCreatingPlan] = useState(false);
   const [manualPlan, setManualPlan] = useState({
     rakeId: "",
-    orders: [],
+    orderId: "", // Changed from orders array to single orderId
     stockyard: "",
     loadingPoint: "",
     destination: "",
@@ -176,19 +175,19 @@ const RakeFormation = () => {
       !manualPlan.rakeId ||
       !manualPlan.loadingPoint ||
       !manualPlan.destination ||
-      manualPlan.orders.length === 0
+      !manualPlan.orderId
     ) {
       alert("Please fill all required fields");
       return;
     }
 
-    const selectedOrders = pendingOrders.filter((o) =>
-      manualPlan.orders.includes(o.id)
-    );
-    const totalWeight = selectedOrders.reduce(
-      (sum, order) => sum + parseInt(order.quantity),
-      0
-    );
+    const selectedOrder = orders.find((o) => o.id === manualPlan.orderId);
+    if (!selectedOrder) {
+      alert("Selected order not found");
+      return;
+    }
+
+    const totalWeight = parseInt(selectedOrder.quantity);
     const selectedRake = rakeAvailability.find(
       (r) => r.id === manualPlan.rakeId
     );
@@ -200,7 +199,7 @@ const RakeFormation = () => {
     const newPlan = {
       id: `RAKE-PLAN-${String(plans.length + 1).padStart(3, "0")}`,
       rakeId: manualPlan.rakeId,
-      orders: manualPlan.orders,
+      orders: [manualPlan.orderId], // Keep as array for consistency
       stockyard: manualPlan.stockyard,
       loadingPoint: manualPlan.loadingPoint,
       destination: manualPlan.destination,
@@ -222,10 +221,19 @@ const RakeFormation = () => {
     };
 
     setPlans([...plans, newPlan]);
+    
+    // Update order status to "In Progress" or "Assigned"
+    const updatedOrders = orders.map(order => 
+      order.id === manualPlan.orderId 
+        ? { ...order, status: "Assigned to Rake" }
+        : order
+    );
+    setOrders(updatedOrders);
+    
     setIsCreatingPlan(false);
     setManualPlan({
       rakeId: "",
-      orders: [],
+      orderId: "",
       stockyard: "",
       loadingPoint: "",
       destination: "",
@@ -387,27 +395,28 @@ const RakeFormation = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Orders *
+                Select Order *
               </label>
               <select
-                multiple
-                value={manualPlan.orders}
-                onChange={(e) =>
+                value={manualPlan.orderId}
+                onChange={(e) => {
+                  const selectedOrder = orders.find(o => o.id === e.target.value);
                   setManualPlan({
-                    ...manualPlan,
-                    orders: Array.from(
-                      e.target.selectedOptions,
-                      (option) => option.value
-                    ),
-                  })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sail-blue h-24"
+                    ...manualPlan, 
+                    orderId: e.target.value,
+                    destination: selectedOrder ? selectedOrder.destination : ""
+                  });
+                }}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sail-blue"
               >
-                {pendingOrders.map((order) => (
-                  <option key={order.id} value={order.id}>
-                    {order.id} - {order.customer} ({order.quantity} MT)
-                  </option>
-                ))}
+                <option value="">Choose Order</option>
+                {orders
+                  .filter((order) => order.status === "Pending")
+                  .map((order) => (
+                    <option key={order.id} value={order.id}>
+                      {order.id} - {order.customer} ({order.quantity} MT) - {order.material}
+                    </option>
+                  ))}
               </select>
             </div>
             <div>
@@ -462,7 +471,13 @@ const RakeFormation = () => {
                 }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sail-blue"
                 placeholder="Enter destination"
+                readOnly={!!manualPlan.orderId}
               />
+              {manualPlan.orderId && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Auto-filled from selected order
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

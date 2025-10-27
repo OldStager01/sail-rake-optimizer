@@ -6,18 +6,20 @@ import RakeFormation from "./pages/RakeFormation";
 import MaterialInventory from "./pages/MaterialInventory";
 import Analytics from "./pages/Analytics";
 import Reports from "./pages/Reports";
+import { pendingOrders } from "./data/mockData";
 
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [orders, setOrders] = useState(pendingOrders);
 
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <Dashboard />;
+        return <Dashboard orders={orders} />;
       case "rake-formation":
-        return <RakeFormation />;
+        return <RakeFormation orders={orders} setOrders={setOrders} />;
       case "inventory":
-        return <MaterialInventory />;
+        return <MaterialInventory orders={orders} setOrders={setOrders} />;
       case "analytics":
         return <Analytics />;
       case "reports":
@@ -32,7 +34,7 @@ function App() {
           </div>
         );
       default:
-        return <Dashboard />;
+        return <Dashboard orders={orders} />;
     }
   };
 
