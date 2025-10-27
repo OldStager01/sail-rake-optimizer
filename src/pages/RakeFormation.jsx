@@ -504,6 +504,56 @@ const RakeFormation = () => {
             </h3>
             <DataTable columns={planColumns} data={plans} />
           </div>
+          <div className="card mt-5">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Dispatch Schedule Timeline
+            </h3>
+            <div className="relative">
+              {plans.map((plan, index) => (
+                <div
+                  key={plan.id}
+                  className="flex items-center space-x-4 mb-6 last:mb-0"
+                >
+                  <div className="flex-shrink-0 w-32 text-right">
+                    <p className="text-sm font-semibold text-gray-900">
+                      {formatDateTime(plan.dispatchTime)}
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div
+                      className={`w-4 h-4 rounded-full border-4 ${
+                        plan.status === "Optimized"
+                          ? "bg-green-500 border-green-200"
+                          : "bg-blue-500 border-blue-200"
+                      }`}
+                    ></div>
+                  </div>
+                  <div className="flex-1 bg-gray-50 p-4 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {plan.rakeId} → {plan.destination}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {plan.totalWeight} MT • {plan.utilization}%
+                          Utilization • ETA: {formatDateTime(plan.eta)}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Route: {plan.route}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-600">Cost Savings</p>
+                        <p className="font-bold text-green-600">
+                          {formatCurrency(plan.savings)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -564,57 +614,6 @@ const RakeFormation = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Dispatch Schedule Timeline
-        </h3>
-        <div className="relative">
-          {plans.map((plan, index) => (
-            <div
-              key={plan.id}
-              className="flex items-center space-x-4 mb-6 last:mb-0"
-            >
-              <div className="flex-shrink-0 w-32 text-right">
-                <p className="text-sm font-semibold text-gray-900">
-                  {formatDateTime(plan.dispatchTime)}
-                </p>
-              </div>
-              <div className="flex-shrink-0">
-                <div
-                  className={`w-4 h-4 rounded-full border-4 ${
-                    plan.status === "Optimized"
-                      ? "bg-green-500 border-green-200"
-                      : "bg-blue-500 border-blue-200"
-                  }`}
-                ></div>
-              </div>
-              <div className="flex-1 bg-gray-50 p-4 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-gray-900">
-                      {plan.rakeId} → {plan.destination}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {plan.totalWeight} MT • {plan.utilization}% Utilization •
-                      ETA: {formatDateTime(plan.eta)}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Route: {plan.route}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600">Cost Savings</p>
-                    <p className="font-bold text-green-600">
-                      {formatCurrency(plan.savings)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
